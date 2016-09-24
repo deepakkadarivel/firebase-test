@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "80582795839",
+    "project_id": "firebase-authentication-60be0"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:80582795839:android:c26b1c37ff1be435",
+        "android_client_info": {
+          "package_name": "com.upbeat.firebaseauthentication"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "80582795839-225ba4ph9qlu938gtg3fjn75nna4a6hu.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.upbeat.firebaseauthentication",
+            "certificate_hash": "5AE3BC5240C7E6D19D90DA6754E5BCB7CF8A5495"
+          }
+        },
+        {
+          "client_id": "80582795839-hrtne1ibbnumnuau1pob7sj38l49dvvg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCMKCL6kOo91CeZkahjFXn56XAQ1tJ7Hks"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
