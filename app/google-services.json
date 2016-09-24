@@ -1,19 +1,21 @@
 {
   "project_info": {
-    "project_number": "80582795839",
-    "project_id": "firebase-authentication-60be0"
+    "project_number": "40168146998",
+    "firebase_url": "https://fir-auth-ae230.firebaseio.com",
+    "project_id": "fir-auth-ae230",
+    "storage_bucket": "fir-auth-ae230.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:80582795839:android:c26b1c37ff1be435",
+        "mobilesdk_app_id": "1:40168146998:android:c26b1c37ff1be435",
         "android_client_info": {
           "package_name": "com.upbeat.firebaseauthentication"
         }
       },
       "oauth_client": [
         {
-          "client_id": "80582795839-225ba4ph9qlu938gtg3fjn75nna4a6hu.apps.googleusercontent.com",
+          "client_id": "40168146998-mdtarsbaib9rdflj0leliqptt0c06kfs.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.upbeat.firebaseauthentication",
@@ -21,13 +23,13 @@
           }
         },
         {
-          "client_id": "80582795839-hrtne1ibbnumnuau1pob7sj38l49dvvg.apps.googleusercontent.com",
+          "client_id": "40168146998-3ltvbpchvsv7lg2j8vo2el4mou2657oe.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCMKCL6kOo91CeZkahjFXn56XAQ1tJ7Hks"
+          "current_key": "AIzaSyAXdi1rYzzmeSlJlSrM2gTzcPYUWf6kmvM"
         }
       ],
       "services": {
@@ -35,11 +37,16 @@
           "status": 1
         },
         "appinvite_service": {
-          "status": 1,
-          "other_platform_oauth_client": []
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "40168146998-3ltvbpchvsv7lg2j8vo2el4mou2657oe.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         },
         "ads_service": {
-          "status": 1
+          "status": 2
         }
       }
     }
