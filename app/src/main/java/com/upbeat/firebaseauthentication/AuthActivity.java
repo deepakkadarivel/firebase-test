@@ -15,6 +15,8 @@ import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
@@ -33,6 +35,9 @@ import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.Arrays;
 
@@ -68,7 +73,10 @@ public class AuthActivity extends AppCompatActivity implements GoogleApiClient.O
         //Configure Facebook Sign In
         loginButton = (LoginButton) findViewById(R.id.loginButton);
 
-        loginButton.setReadPermissions(Arrays.asList("email"));
+//        loginButton.setReadPermissions(Arrays.asList("email"));
+
+        loginButton.setReadPermissions(Arrays.asList(
+                "public_profile", "email", "user_birthday", "user_friends"));
 
         loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
@@ -177,7 +185,7 @@ public class AuthActivity extends AppCompatActivity implements GoogleApiClient.O
         }
     }
 
-    private void handleFacebookAccessToken(AccessToken accessToken) {
+    private void handleFacebookAccessToken(final AccessToken accessToken) {
         loginButton.setVisibility(View.GONE);
 
         AuthCredential credential = FacebookAuthProvider.getCredential(accessToken.getToken());
@@ -186,6 +194,29 @@ public class AuthActivity extends AppCompatActivity implements GoogleApiClient.O
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (!task.isSuccessful()) {
                     Toast.makeText(getApplicationContext(), R.string.firebase_error_login, Toast.LENGTH_LONG).show();
+                } else {
+                    GraphRequest request = GraphRequest.newMeRequest(
+                            accessToken,
+                            new GraphRequest.GraphJSONObjectCallback() {
+                                @Override
+                                public void onCompleted(JSONObject object, GraphResponse response) {
+                                    Log.v("LoginActivity", response.toString());
+
+                                    // Application code
+                                    try {
+                                        String email = object.getString("email");
+                                        String birthday = object.getString("birthday"); // 01/31/1980 format
+                                        Log.d(TAG, "User : " + object.toString());
+                                        statusText.setText("Hello " + email);
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            });
+                    Bundle parameters = new Bundle();
+                    parameters.putString("fields", "id,name,email,gender,birthday");
+                    request.setParameters(parameters);
+                    request.executeAsync();
                 }
                 loginButton.setVisibility(View.VISIBLE);
             }
