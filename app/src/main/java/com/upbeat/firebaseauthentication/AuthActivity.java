@@ -16,7 +16,9 @@ import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
 import com.facebook.GraphRequest;
+import com.facebook.GraphRequestAsyncTask;
 import com.facebook.GraphResponse;
+import com.facebook.HttpMethod;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
@@ -36,6 +38,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -217,6 +220,26 @@ public class AuthActivity extends AppCompatActivity implements GoogleApiClient.O
                     parameters.putString("fields", "id,name,email,gender,birthday");
                     request.setParameters(parameters);
                     request.executeAsync();
+
+                    GraphRequestAsyncTask graphRequestAsyncTask = new GraphRequest(
+                            accessToken,
+                            //AccessToken.getCurrentAccessToken(),
+                            //  /me/friends return only friends who are using your app
+                            //  /me/taggable_friends  can be used to get all taggable friends
+                            "/me/taggable_friends",
+                            null,
+                            HttpMethod.GET,
+                            new GraphRequest.Callback() {
+                                public void onCompleted(GraphResponse response) {
+                                    try {
+                                        JSONArray rawName = response.getJSONObject().getJSONArray("data");
+                                        Log.d(TAG, "User Friends : " + rawName.toString());
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }
+                    ).executeAsync();
                 }
                 loginButton.setVisibility(View.VISIBLE);
             }
