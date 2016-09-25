@@ -23,11 +23,21 @@
         android:layout_marginTop="20dp"
         android:layout_below="@+id/status_text"/>
 
+    <com.facebook.login.widget.LoginButton
+        android:id="@+id/loginButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_below="@+id/sign_in_button"
+        android:layout_centerHorizontal="true"
+        android:paddingBottom="10dp"
+        android:paddingTop="10dp" />
+
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/sign_out_button"
-        android:layout_below="@+id/sign_in_button"
+        android:layout_below="@+id/loginButton"
         android:text="SIGN OUT"
         android:layout_marginTop="20dp"
         android:background="@android:color/white"/>

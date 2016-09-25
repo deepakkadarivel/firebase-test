@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Firebase Authentication</string>
+    <string name="facebook_app_id">346416342366160</string>
+    <string name="cancel_login">Login Canceled</string>
+    <string name="error_login">Error occured while login</string>
+    <string name="firebase_error_login">Firebase returned eoor during login</string>
 </resources>

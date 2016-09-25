@@ -10,6 +10,14 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.AccessToken;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.FacebookSdk;
+import com.facebook.login.LoginManager;
+import com.facebook.login.LoginResult;
+import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -21,9 +29,12 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+
+import java.util.Arrays;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -33,6 +44,7 @@ public class AuthActivity extends AppCompatActivity implements GoogleApiClient.O
 
     private static final int RC_SIGN_IN = 9001;
     private static final String TAG = "AuthActivity";
+    private static final int RC_FB_SIGN_IN = 9002;
     @BindView(R.id.status_text) TextView statusText;
     @BindView(R.id.sign_in_button) SignInButton signInButton;
     @BindView(R.id.sign_out_button) Button signOutButton;
@@ -41,11 +53,39 @@ public class AuthActivity extends AppCompatActivity implements GoogleApiClient.O
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
 
+    private LoginButton loginButton;
+    private CallbackManager callbackManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        FacebookSdk.sdkInitialize(getApplicationContext());
         setContentView(R.layout.activity_auth);
         ButterKnife.bind(this);
+
+        callbackManager = CallbackManager.Factory.create();
+
+        //Configure Facebook Sign In
+        loginButton = (LoginButton) findViewById(R.id.loginButton);
+
+        loginButton.setReadPermissions(Arrays.asList("email"));
+
+        loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+            @Override
+            public void onSuccess(LoginResult loginResult) {
+                handleFacebookAccessToken(loginResult.getAccessToken());
+            }
+
+            @Override
+            public void onCancel() {
+                Toast.makeText(getApplicationContext(), R.string.cancel_login, Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onError(FacebookException error) {
+                Toast.makeText(getApplicationContext(), R.string.error_login, Toast.LENGTH_SHORT).show();
+            }
+        });
 
         // Configure Google Sign In
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -58,6 +98,7 @@ public class AuthActivity extends AppCompatActivity implements GoogleApiClient.O
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
 
+        //Configure Firebase Auth
         mAuth = FirebaseAuth.getInstance();
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -101,6 +142,8 @@ public class AuthActivity extends AppCompatActivity implements GoogleApiClient.O
                 // ...
                 Log.d(TAG, "login Failed : " + result);
             }
+        } else {
+            callbackManager.onActivityResult(requestCode, resultCode, data);
         }
     }
 
@@ -111,6 +154,7 @@ public class AuthActivity extends AppCompatActivity implements GoogleApiClient.O
 
     private void signOut() {
         FirebaseAuth.getInstance().signOut();
+        LoginManager.getInstance().logOut();
         statusText.setText("Signed out");
     }
 
@@ -131,6 +175,21 @@ public class AuthActivity extends AppCompatActivity implements GoogleApiClient.O
         if (mAuthListener != null) {
             mAuth.removeAuthStateListener(mAuthListener);
         }
+    }
+
+    private void handleFacebookAccessToken(AccessToken accessToken) {
+        loginButton.setVisibility(View.GONE);
+
+        AuthCredential credential = FacebookAuthProvider.getCredential(accessToken.getToken());
+        mAuth.signInWithCredential(credential).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if (!task.isSuccessful()) {
+                    Toast.makeText(getApplicationContext(), R.string.firebase_error_login, Toast.LENGTH_LONG).show();
+                }
+                loginButton.setVisibility(View.VISIBLE);
+            }
+        });
     }
 
     private void firebaseAuthWithGoogle(final GoogleSignInAccount acct) {
